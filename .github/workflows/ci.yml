@@ -1,0 +1,33 @@
+name: CI/CD Pipeline DevOps
+
+# Esto le dice a GitHub que ejecute el pipeline cada vez que hagamos un "push" a la rama main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Le pedimos a GitHub una máquina con Linux prestada
+
+    steps:
+    # 1. Clonado del repositorio
+    - name: Clonar el código fuente
+      uses: actions/checkout@v3
+
+    # 2. Configurar el entorno (Prueba básica / Build)
+    - name: Configurar Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Instalar dependencias de la API
+      run: |
+        cd api
+        npm install
+
+    # 3. Construcción de imagen Docker
+    - name: Construir la imagen de Docker
+      run: |
+        cd api
+        docker build -t api-consultoria:latest .
