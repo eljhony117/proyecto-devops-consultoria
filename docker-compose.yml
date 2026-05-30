@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: consultoria_db
+      MYSQL_USER: api_user
+      MYSQL_PASSWORD: apipassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  api:
+    build: ./api
+    container_name: api_rest
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=api_user
+      - DB_PASSWORD=apipassword
+      - DB_NAME=consultoria_db
+    depends_on:
+      - db
+
+volumes:
+  db_data:
